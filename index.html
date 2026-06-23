@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Targetyan</title>
+<style>
+  body {
+    margin: 0;
+    background: #07050A;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    font-family: sans-serif;
+  }
+  .logo {
+    font-size: 22px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    background: linear-gradient(120deg, #F2D06B, #C8A94A);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: pulse 1.5s ease infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+</style>
+</head>
+<body>
+  <div class="logo">Targetyan</div>
+  <script>
+    const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+      || window.innerWidth <= 768;
+
+    if (isMobile) {
+      window.location.replace('targetyan-mobile.html');
+    } else {
+      window.location.replace('targetyan.html');
+    }
+  </script>
+</body>
+</html>

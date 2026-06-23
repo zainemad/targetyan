@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Targetyan — SMMA</title>
+<link rel="preload" as="image" href="banner.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --g:#C8A94A;--gl:#F2D06B;--gg:rgba(200,169,74,0.45);
+  --c:#F5ECD8;
+  --bg:#07050A;--bg2:#0C0910;--bg3:#110D18;--bg4:#160F20;
+  --muted:#6B5F82;--pur:#7B35ED;--purg:rgba(123,53,237,0.35);
+}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--c);overflow-x:hidden;}
+/* Hide default scrollbar */
+::-webkit-scrollbar{width:0px;}
+* { scrollbar-width: none; }
+
+/* Hide default cursor */
+*, *:hover { cursor: none !important; }
+
+/* CUSTOM CURSOR */
+#cursor-dot{
+  position:fixed;width:8px;height:8px;border-radius:50%;
+  background:var(--g);pointer-events:none;z-index:99999;
+  transform:translate(-50%,-50%);
+  box-shadow:0 0 12px var(--gg),0 0 24px rgba(200,169,74,0.3);
+  transition:width .15s, height .15s, background .15s;
+}
+#cursor-ring{
+  position:fixed;width:36px;height:36px;border-radius:50%;
+  border:1.5px solid rgba(200,169,74,0.55);pointer-events:none;z-index:99998;
+  transform:translate(-50%,-50%);
+  transition:transform .08s linear, width .25s, height .25s, border-color .25s, opacity .25s;
+  box-shadow:0 0 16px rgba(200,169,74,0.1);
+}
+#cursor-dot.hovering{width:12px;height:12px;background:var(--gl);}
+#cursor-ring.hovering{width:56px;height:56px;border-color:rgba(200,169,74,0.9);box-shadow:0 0 28px rgba(200,169,74,0.25);}
+#cursor-dot.clicking{width:5px;height:5px;}
+#cursor-ring.clicking{width:28px;height:28px;border-color:var(--gl);}
+
+/* SCROLL PROGRESS BAR */
+#scroll-bar{
+  position:fixed;top:0;left:0;height:2px;width:0%;z-index:10000;
+  background:linear-gradient(90deg,#7B35ED,var(--g),#F2D06B);
+  box-shadow:0 0 10px var(--gg),0 0 20px rgba(123,53,237,0.4);
+  transition:width .05s linear;
+}
+
+/* SCROLL TO TOP BUTTON */
+#scroll-top{
+  position:fixed;bottom:36px;right:36px;z-index:9999;
+  width:48px;height:48px;border-radius:50%;border:1px solid rgba(200,169,74,0.35);
+  background:rgba(7,5,10,0.85);backdrop-filter:blur(16px);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;transform:translateY(12px);
+  transition:opacity .4s, transform .4s, box-shadow .3s;
+  box-shadow:0 0 20px rgba(200,169,74,0.1);
+}
+#scroll-top.visible{opacity:1;transform:translateY(0);}
+#scroll-top:hover{box-shadow:0 0 30px rgba(200,169,74,0.4);}
+#scroll-top svg{width:16px;height:16px;stroke:var(--g);fill:none;stroke-width:2;}
+
+/* NAV */
+nav{
+  position:fixed;top:0;width:100%;z-index:999;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 56px;
+  background:rgba(7,5,10,0.85);
+  backdrop-filter:blur(24px);
+  border-bottom:1px solid rgba(200,169,74,0.12);
+}
+.logo{
+  font-family:'Playfair Display',serif;font-size:24px;font-weight:900;
+  letter-spacing:4px;text-transform:uppercase;text-decoration:none;
+  background:linear-gradient(120deg,#F2D06B 0%,#C8A94A 50%,#9A7020 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  filter:drop-shadow(0 0 18px rgba(200,169,74,0.5));
+}
+.nav-links{display:flex;gap:36px;list-style:none;}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:11px;letter-spacing:2.5px;text-transform:uppercase;font-weight:500;transition:color .3s;}
+.nav-links a:hover{color:var(--g);}
+.nav-btn{
+  background:linear-gradient(135deg,#7B35ED,#4A10C0);
+  color:#fff;padding:12px 30px;border:none;border-radius:100px;
+  font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;font-weight:600;
+  cursor:pointer;text-decoration:none;display:inline-block;transition:all .35s;
+  box-shadow:0 0 24px rgba(123,53,237,0.4),0 4px 20px rgba(0,0,0,.5);
+}
+.nav-btn:hover{transform:translateY(-2px);box-shadow:0 0 45px rgba(123,53,237,0.55),0 8px 30px rgba(0,0,0,.6);}
+
+/* HERO */
+.hero{position:relative;width:100%;min-height:100vh;display:flex;align-items:flex-end;overflow:hidden;}
+.hero-bg{
+  position:absolute;inset:0;
+  background-image:url('banner.jpg');
+  background-size:cover;background-position:center top;
+}
+.hero-left{position:absolute;inset:0;background:linear-gradient(100deg,rgba(7,5,10,0.93) 0%,rgba(7,5,10,0.55) 45%,rgba(7,5,10,0.2) 70%);}
+.hero-bot{position:absolute;bottom:0;left:0;right:0;height:320px;background:linear-gradient(transparent,var(--bg));}
+.orb1{position:absolute;top:15%;left:5%;width:550px;height:550px;border-radius:50%;background:radial-gradient(circle,rgba(123,53,237,0.07),transparent 70%);pointer-events:none;}
+.orb2{position:absolute;top:35%;left:22%;width:380px;height:380px;border-radius:50%;background:radial-gradient(circle,rgba(200,169,74,0.05),transparent 70%);pointer-events:none;}
+.hero-content{position:relative;z-index:2;padding:140px 60px 90px;max-width:680px;animation:riseUp 1.3s cubic-bezier(.16,1,.3,1) both;}
+.hero-pill{
+  display:inline-flex;align-items:center;gap:10px;
+  background:rgba(200,169,74,0.09);border:1px solid rgba(200,169,74,0.28);
+  padding:8px 22px;border-radius:100px;margin-bottom:32px;
+  font-size:10px;letter-spacing:3.5px;text-transform:uppercase;color:var(--g);font-weight:600;
+}
+.dot{width:5px;height:5px;border-radius:50%;background:var(--g);animation:blink 2s infinite;}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(50px,7vw,92px);font-weight:900;line-height:1.0;color:var(--c);margin-bottom:12px;}
+.hero h1 em{
+  font-style:italic;
+  background:linear-gradient(120deg,#F2D06B,#C8A94A);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  filter:drop-shadow(0 0 40px rgba(200,169,74,0.5));
+}
+.hero-sub{font-family:'Playfair Display',serif;font-size:21px;font-style:italic;color:rgba(245,236,216,0.55);margin-bottom:50px;}
+.hero-ctas{display:flex;gap:16px;flex-wrap:wrap;}
+
+/* BUTTONS */
+.btn-gold{
+  background:linear-gradient(135deg,#F2D06B,#C8A94A,#9A7020);
+  color:#07050A;padding:17px 44px;border:none;border-radius:100px;
+  font-family:'DM Sans',sans-serif;font-size:12px;letter-spacing:2px;text-transform:uppercase;font-weight:700;
+  cursor:pointer;text-decoration:none;display:inline-block;transition:all .35s;
+  box-shadow:0 0 30px rgba(200,169,74,0.45),0 6px 24px rgba(0,0,0,.5);
+}
+.btn-gold:hover{transform:translateY(-3px);box-shadow:0 0 60px rgba(200,169,74,0.65),0 14px 40px rgba(0,0,0,.6);}
+.btn-outline{
+  background:rgba(255,255,255,0.04);color:var(--c);
+  padding:17px 44px;border:1px solid rgba(245,236,216,0.18);border-radius:100px;
+  font-family:'DM Sans',sans-serif;font-size:12px;letter-spacing:2px;text-transform:uppercase;font-weight:500;
+  cursor:pointer;text-decoration:none;display:inline-block;transition:all .3s;backdrop-filter:blur(12px);
+}
+.btn-outline:hover{border-color:rgba(245,236,216,0.45);background:rgba(255,255,255,0.07);}
+
+/* GLOW DIVIDER */
+.glow-rule{height:1px;background:linear-gradient(90deg,transparent 0%,var(--g) 35%,rgba(123,53,237,0.6) 65%,transparent 100%);}
+
+/* STATS */
+.stats{display:flex;justify-content:center;flex-wrap:wrap;background:linear-gradient(180deg,var(--bg),var(--bg2));padding:52px 60px;}
+.stat{text-align:center;padding:0 56px;position:relative;}
+.stat+.stat::before{content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);height:44px;width:1px;background:rgba(200,169,74,0.18);}
+.stat-n{
+  font-family:'Playfair Display',serif;font-size:52px;font-weight:900;line-height:1;
+  background:linear-gradient(135deg,#F2D06B,#C8A94A);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  filter:drop-shadow(0 0 18px rgba(200,169,74,0.45));
+}
+.stat-l{font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--muted);margin-top:8px;}
+
+/* SECTIONS */
+section{padding:110px 60px;position:relative;}
+.sec-tag{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--g);font-weight:600;margin-bottom:18px;display:flex;align-items:center;gap:12px;}
+.sec-tag::before{content:'';width:28px;height:1px;background:var(--g);}
+.sec-h{font-family:'Playfair Display',serif;font-size:clamp(36px,4.5vw,62px);font-weight:900;line-height:1.06;margin-bottom:64px;max-width:560px;}
+.sec-h em{font-style:italic;background:linear-gradient(120deg,#F2D06B,#C8A94A);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+
+/* SERVICES */
+#services{background:var(--bg2);}
+.svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+.svc-card{background:var(--bg3);border:1px solid rgba(200,169,74,0.09);border-radius:22px;padding:38px 30px;position:relative;overflow:hidden;transition:all .4s;}
+.svc-card::after{content:'';position:absolute;inset:0;border-radius:22px;background:radial-gradient(ellipse at top left,rgba(200,169,74,0.08),transparent 60%);opacity:0;transition:opacity .4s;pointer-events:none;}
+.svc-card:hover{border-color:rgba(200,169,74,0.35);transform:translateY(-7px);box-shadow:0 24px 64px rgba(0,0,0,.6),0 0 50px rgba(200,169,74,0.08);}
+.svc-card:hover::after{opacity:1;}
+.svc-no{font-family:'Playfair Display',serif;font-size:44px;font-weight:900;color:rgba(200,169,74,0.07);line-height:1;margin-bottom:22px;}
+.svc-ico{width:50px;height:50px;margin-bottom:20px;display:flex;align-items:center;justify-content:center;background:rgba(200,169,74,0.07);border:1px solid rgba(200,169,74,0.22);border-radius:14px;transition:all .4s;box-shadow:0 0 16px rgba(200,169,74,0.08);}
+.svc-card:hover .svc-ico{background:rgba(200,169,74,0.14);box-shadow:0 0 28px rgba(200,169,74,0.25);}
+.svc-ico svg{width:20px;height:20px;stroke:var(--g);fill:none;stroke-width:1.6;}
+.svc-t{font-family:'Playfair Display',serif;font-size:21px;font-weight:700;color:var(--c);margin-bottom:12px;line-height:1.25;}
+.svc-d{font-size:14px;color:var(--muted);line-height:1.78;}
+.svc-badge{display:inline-block;margin-top:18px;background:rgba(123,53,237,0.1);border:1px solid rgba(123,53,237,0.25);color:#B89DFF;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;padding:5px 16px;border-radius:100px;font-weight:600;}
+
+/* PACKAGE */
+#package{background:var(--bg);}
+.pkg-layout{max-width:980px;display:grid;grid-template-columns:1fr 380px;gap:56px;align-items:start;}
+.feat-row{display:flex;align-items:flex-start;gap:16px;padding:20px 0;border-bottom:1px solid rgba(255,255,255,0.035);}
+.feat-row:last-child{border:none;}
+.feat-chk{width:22px;height:22px;flex-shrink:0;background:rgba(200,169,74,0.08);border:1px solid rgba(200,169,74,0.28);border-radius:50%;display:flex;align-items:center;justify-content:center;margin-top:2px;box-shadow:0 0 10px rgba(200,169,74,0.1);}
+.feat-chk svg{width:9px;height:9px;stroke:var(--g);stroke-width:3;fill:none;}
+.feat-main{font-size:15px;color:var(--c);line-height:1.5;}
+.feat-sub{color:var(--muted);font-size:13px;display:block;margin-top:4px;}
+.price-box{
+  position:sticky;top:110px;
+  background:linear-gradient(160deg,var(--bg3),var(--bg4));
+  border:1px solid rgba(200,169,74,0.25);border-radius:28px;
+  padding:50px 40px;text-align:center;overflow:hidden;
+  box-shadow:0 0 80px rgba(200,169,74,0.06),0 40px 80px rgba(0,0,0,.6);
+}
+.price-box::before{content:'';position:absolute;top:-60%;left:-30%;width:160%;height:160%;background:radial-gradient(ellipse at 50% 20%,rgba(200,169,74,0.07),transparent 65%);pointer-events:none;}
+.save-pill{display:inline-block;background:rgba(180,40,40,0.18);border:1px solid rgba(220,80,80,0.25);color:#FF9090;font-size:11px;letter-spacing:2px;text-transform:uppercase;padding:7px 22px;border-radius:100px;font-weight:600;margin-bottom:26px;}
+.p-was{font-size:17px;color:var(--muted);text-decoration:line-through;margin-bottom:8px;}
+.p-now{font-family:'Playfair Display',serif;line-height:1;margin-bottom:8px;background:linear-gradient(120deg,#F2D06B,#C8A94A);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 24px rgba(200,169,74,0.5));}
+.p-big{font-size:64px;font-weight:900;}
+.p-cur{font-size:24px;font-weight:400;font-family:'DM Sans',sans-serif;vertical-align:super;}
+.p-lbl{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:36px;}
+.price-box .btn-gold{width:100%;display:block;margin-bottom:14px;text-align:center;}
+.price-box .btn-outline{width:100%;display:block;text-align:center;font-size:11px;}
+.p-note{font-size:12px;color:var(--muted);margin-top:20px;line-height:1.65;}
+
+/* TEAM */
+#team{background:var(--bg2);}
+.team-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;max-width:760px;}
+.team-card{background:var(--bg3);border:1px solid rgba(200,169,74,0.1);border-radius:26px;padding:46px 36px;position:relative;overflow:hidden;transition:all .4s;}
+.team-card::after{content:'';position:absolute;bottom:-50px;right:-50px;width:140px;height:140px;border-radius:50%;background:radial-gradient(circle,rgba(123,53,237,0.07),transparent);pointer-events:none;}
+.team-card:hover{border-color:rgba(200,169,74,0.3);transform:translateY(-5px);box-shadow:0 24px 70px rgba(0,0,0,.45),0 0 45px rgba(200,169,74,0.07);}
+.t-avatar{width:70px;height:70px;margin-bottom:24px;background:linear-gradient(135deg,rgba(200,169,74,0.18),rgba(200,169,74,0.04));border:1px solid rgba(200,169,74,0.28);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:26px;font-weight:900;color:var(--g);box-shadow:0 0 28px rgba(200,169,74,0.15);}
+.t-name{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:var(--c);margin-bottom:6px;}
+.t-role{font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--g);font-weight:600;margin-bottom:18px;display:flex;align-items:center;gap:8px;}
+.t-role::before{content:'';width:18px;height:1px;background:var(--g);}
+.t-bio{font-size:14px;color:var(--muted);line-height:1.78;}
+
+/* PROCESS */
+#process{background:var(--bg);}
+.proc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;}
+.proc-card{background:var(--bg3);border:1px solid rgba(255,255,255,0.04);border-radius:22px;padding:38px 26px;text-align:center;transition:all .4s;}
+.proc-card:hover{border-color:rgba(123,53,237,0.32);box-shadow:0 0 50px rgba(123,53,237,0.08);transform:translateY(-5px);}
+.proc-n{font-family:'Playfair Display',serif;font-size:52px;font-weight:900;background:linear-gradient(135deg,#F2D06B,#C8A94A);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;opacity:0.3;line-height:1;margin-bottom:20px;}
+.proc-t{font-size:16px;font-weight:600;color:var(--c);margin-bottom:10px;}
+.proc-d{font-size:13px;color:var(--muted);line-height:1.68;}
+
+/* PLATFORMS */
+.plats{display:flex;gap:12px;flex-wrap:wrap;margin-top:44px;}
+.plat{padding:11px 26px;border:1px solid rgba(200,169,74,0.18);border-radius:100px;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--c);font-weight:500;background:rgba(200,169,74,0.04);transition:all .3s;}
+.plat:hover{border-color:var(--g);background:rgba(200,169,74,0.09);}
+
+/* FINAL CTA */
+#cta{text-align:center;background:radial-gradient(ellipse at 50% 0%,rgba(123,53,237,0.1),var(--bg2) 70%);border-top:1px solid rgba(200,169,74,0.08);}
+#cta .sec-tag{justify-content:center;}
+#cta .sec-tag::before{display:none;}
+#cta .sec-h{margin:0 auto 28px;text-align:center;max-width:580px;}
+#cta p{font-size:17px;color:var(--muted);line-height:1.85;max-width:480px;margin:0 auto 48px;}
+.cta-row{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;}
+
+/* FOOTER */
+footer{background:var(--bg);border-top:1px solid rgba(200,169,74,0.09);padding:36px 60px;display:flex;justify-content:space-between;align-items:center;}
+.f-logo{font-family:'Playfair Display',serif;font-size:20px;font-weight:900;letter-spacing:4px;text-transform:uppercase;background:linear-gradient(120deg,#F2D06B,#C8A94A);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.f-links{display:flex;gap:28px;}
+.f-links a{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color .3s;}
+.f-links a:hover{color:var(--g);}
+.f-copy{font-size:12px;color:var(--muted);}
+
+/* ANIMATIONS */
+@keyframes riseUp{from{opacity:0;transform:translateY(40px);}to{opacity:1;transform:translateY(0);}}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.3;}}
+.fi{opacity:0;transform:translateY(26px);transition:opacity .8s ease,transform .8s ease;}
+.fi.on{opacity:1;transform:translateY(0);}
+
+/* RESPONSIVE */
+@media(max-width:1100px){.svc-grid{grid-template-columns:repeat(2,1fr);}.pkg-layout{grid-template-columns:1fr;}.price-box{position:static;}}
+
+@media(max-width:768px){
+  #cursor-dot,#cursor-ring{display:none;}
+  *,*:hover{cursor:auto !important;}
+  nav{padding:14px 20px;}
+  .nav-links{display:none;}
+  .nav-btn{padding:10px 18px;font-size:10px;}
+  .hero{min-height:100svh;align-items:center;}
+  .hero-bg{background-position:68% center;}
+  .hero-left{background:linear-gradient(180deg,rgba(7,5,10,0.5) 0%,rgba(7,5,10,0.72) 40%,rgba(7,5,10,0.95) 100%);}
+  .hero-bot{height:160px;}
+  .hero-content{padding:100px 24px 60px;max-width:100%;text-align:center;display:flex;flex-direction:column;align-items:center;}
+  .hero h1{font-size:clamp(42px,13vw,62px);}
+  .hero-sub{font-size:17px;}
+  .hero-pill{font-size:9px;letter-spacing:2px;padding:6px 14px;}
+  .hero-ctas{flex-direction:column;align-items:center;width:100%;}
+  .btn-gold,.btn-outline{width:100%;max-width:300px;text-align:center;padding:15px 20px;}
+  .stats{padding:28px 16px;flex-wrap:wrap;}
+  .stat{padding:14px 18px;width:50%;}
+  .stat+.stat::before{display:none;}
+  .stat-n{font-size:38px;}
+  section{padding:64px 20px;}
+  .sec-h{margin-bottom:40px;}
+  .svc-grid,.proc-grid{grid-template-columns:1fr;}
+  .team-grid{grid-template-columns:1fr;}
+  footer{flex-direction:column;gap:14px;text-align:center;padding:28px 20px;}
+  .f-links{display:none;}
+  #scroll-top{bottom:20px;right:20px;width:42px;height:42px;}
+}
+</style>
+</head>
+<body>
+
+<!-- CUSTOM CURSOR -->
+<div id="cursor-dot"></div>
+<div id="cursor-ring"></div>
+<div id="scroll-bar"></div>
+<div id="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+  <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
+</div>
+
+<nav>
+  <a href="#" class="logo">Targetyan</a>
+  <ul class="nav-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#package">Package</a></li>
+    <li><a href="#team">Team</a></li>
+    <li><a href="#process">Process</a></li>
+  </ul>
+  <a href="https://wa.me/201208475556" target="_blank" class="nav-btn">Book Now</a>
+</nav>
+
+<div class="hero" id="home">
+  <div class="hero-bg"></div>
+  <div class="hero-left"></div>
+  <div class="hero-bot"></div>
+  <div class="orb1"></div>
+  <div class="orb2"></div>
+  <div class="hero-content">
+    <div class="hero-pill"><span class="dot"></span>Social Media Marketing Agency</div>
+    <h1>Dominate.<br><em>Convert.</em><br>Scale.</h1>
+    <p class="hero-sub">Stick in Your Target Audience's Mind</p>
+    <div class="hero-ctas">
+      <a href="https://wa.me/201208475556" target="_blank" class="btn-gold">Book via WhatsApp</a>
+      <a href="#package" class="btn-outline">See Package</a>
+    </div>
+  </div>
+</div>
+
+<div class="glow-rule"></div>
+
+<div class="stats fi">
+  <div class="stat"><div class="stat-n">3</div><div class="stat-l">Platforms Covered</div></div>
+  <div class="stat"><div class="stat-n">360°</div><div class="stat-l">Full-Service</div></div>
+  <div class="stat"><div class="stat-n">2×</div><div class="stat-l">Expert Specialists</div></div>
+  <div class="stat"><div class="stat-n">∞</div><div class="stat-l">Growth Potential</div></div>
+</div>
+
+<section id="services">
+  <div class="sec-tag">What We Do</div>
+  <h2 class="sec-h fi">Everything You Need to <em>Own</em> Your Market</h2>
+  <div class="svc-grid">
+    <div class="svc-card fi">
+      <div class="svc-no">01</div>
+      <div class="svc-ico"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+      <div class="svc-t">Social Media Strategy</div>
+      <div class="svc-d">Algorithm-hacking growth plans designed to maximize your reach and build an audience that actually converts.</div>
+    </div>
+    <div class="svc-card fi">
+      <div class="svc-no">02</div>
+      <div class="svc-ico"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35M11 8v3h3"/></svg></div>
+      <div class="svc-t">Account Audit & Analysis</div>
+      <div class="svc-d">Deep professional audit uncovering gaps, hidden opportunities, and quick wins across all your accounts.</div>
+    </div>
+    <div class="svc-card fi">
+      <div class="svc-no">03</div>
+      <div class="svc-ico"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="m8 21 4-4 4 4M12 17v4"/></svg></div>
+      <div class="svc-t">Stop-Scrolling Reels</div>
+      <div class="svc-d">Mobile shooting + professional editing & montage. Content that hooks in the very first second and drives action.</div>
+      <span class="svc-badge">All Platforms</span>
+    </div>
+    <div class="svc-card fi">
+      <div class="svc-no">04</div>
+      <div class="svc-ico"><svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+      <div class="svc-t">Meta Ads Management</div>
+      <div class="svc-d">Full campaign setup, daily optimization, and strategic scaling. Your budget working harder than ever.</div>
+      <span class="svc-badge">Facebook & Instagram</span>
+    </div>
+    <div class="svc-card fi">
+      <div class="svc-no">05</div>
+      <div class="svc-ico"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+      <div class="svc-t">Competitor & Market Research</div>
+      <div class="svc-d">Know exactly what your competitors do right — and where they leave money on the table for you.</div>
+    </div>
+    <div class="svc-card fi">
+      <div class="svc-no">06</div>
+      <div class="svc-ico"><svg viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
+      <div class="svc-t">Persuasive Copywriting</div>
+      <div class="svc-d">Captions, hooks, and ad copy that turn your followers into paying clients — every single post.</div>
+    </div>
+  </div>
+  <div class="plats fi">
+    <div class="plat">Instagram</div>
+    <div class="plat">Facebook</div>
+    <div class="plat">TikTok</div>
+    <div class="plat">Meta Ads</div>
+  </div>
+</section>
+
+<div class="glow-rule"></div>
+
+<section id="package">
+  <div class="sec-tag">The Offer</div>
+  <h2 class="sec-h fi">One Package.<br><em>Total Control.</em></h2>
+  <div class="pkg-layout">
+    <div>
+      <div class="feat-row fi"><div class="feat-chk"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div><div class="feat-main">Social Media Strategy — Algorithm-optimized growth plan to hack reach and maximize visibility</div></div>
+      <div class="feat-row fi"><div class="feat-chk"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div><div class="feat-main">Professional Account Audit & Analysis<span class="feat-sub">Full breakdown of what's working and what's holding you back</span></div></div>
+      <div class="feat-row fi"><div class="feat-chk"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div><div class="feat-main">High-Converting "Stop-Scrolling" Reels<span class="feat-sub">Mobile Shooting + Pro Editing & Montage for Instagram, Facebook & TikTok</span></div></div>
+      <div class="feat-row fi"><div class="feat-chk"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div><div class="feat-main">Meta Ads Management<span class="feat-sub">Campaign Setup, Optimization & Scaling — fully done for you</span></div></div>
+      <div class="feat-row fi"><div class="feat-chk"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div><div class="feat-main">Competitor Research & Market Analysis<span class="feat-sub">Know your market better than anyone competing in it</span></div></div>
+      <div class="feat-row fi"><div class="feat-chk"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div><div class="feat-main">Target Audience Research & Customer Profiling<span class="feat-sub">Laser-accurate personas that drive smarter results</span></div></div>
+      <div class="feat-row fi"><div class="feat-chk"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div><div class="feat-main">Persuasive Copywriting<span class="feat-sub">Captions and ad copy that converts followers into paying clients</span></div></div>
+    </div>
+    <div class="price-box fi">
+      <div class="save-pill">Save 5,001 EGP</div>
+      <div class="p-was">20,000 EGP</div>
+      <div class="p-now"><span class="p-cur">EGP </span><span class="p-big">14,999</span></div>
+      <div class="p-lbl">Full Package — Limited Slots</div>
+      <a href="https://wa.me/201208475556" target="_blank" class="btn-gold">Book Now via WhatsApp</a>
+      <a href="mailto:media321action@gmail.com" class="btn-outline">Send an Email</a>
+      <p class="p-note">Limited client spots available each month.<br>First come, first served.</p>
+    </div>
+  </div>
+</section>
+
+<section id="team">
+  <div class="sec-tag">The Minds Behind It</div>
+  <h2 class="sec-h fi">Two Specialists.<br><em>One Vision.</em></h2>
+  <div class="team-grid">
+    <div class="team-card fi">
+      <div class="t-avatar">ZE</div>
+      <div class="t-name">Zain Emad</div>
+      <div class="t-role">Strategy & Growth</div>
+      <div class="t-bio">The mastermind behind the strategy. Zain leads social media growth, Meta Ads management, audience research, and copywriting — making sure every move is built to scale.</div>
+    </div>
+    <div class="team-card fi">
+      <div class="t-avatar">MG</div>
+      <div class="t-name">Marwan Gado</div>
+      <div class="t-role">Editing & Montage</div>
+      <div class="t-bio">The visual force. Marwan handles all video production — from mobile shooting to professional editing and montage. He turns raw footage into reels that stop the scroll cold.</div>
+    </div>
+  </div>
+</section>
+
+<section id="process" style="background:var(--bg2);">
+  <div class="sec-tag">How It Works</div>
+  <h2 class="sec-h fi">From Zero to <em>Unstoppable</em></h2>
+  <div class="proc-grid">
+    <div class="proc-card fi"><div class="proc-n">01</div><div class="proc-t">Discovery Call</div><div class="proc-d">We learn your brand, goals, and target market inside out before touching anything.</div></div>
+    <div class="proc-card fi"><div class="proc-n">02</div><div class="proc-t">Audit & Strategy</div><div class="proc-d">Full account audit followed by a custom growth strategy built for your niche.</div></div>
+    <div class="proc-card fi"><div class="proc-n">03</div><div class="proc-t">Content & Ads</div><div class="proc-d">We produce, edit, and publish scroll-stopping content alongside targeted ad campaigns.</div></div>
+    <div class="proc-card fi"><div class="proc-n">04</div><div class="proc-t">Optimize & Scale</div><div class="proc-d">We track, test, and scale what works — doubling down on results every single week.</div></div>
+  </div>
+</section>
+
+<section id="cta">
+  <div class="sec-tag">Ready?</div>
+  <h2 class="sec-h fi">Your Audience Is Out There.<br><em>Let's Reach Them.</em></h2>
+  <p>Limited client spots open each month. If you're serious about growing your brand and converting followers into paying clients — this is your move.</p>
+  <div class="cta-row">
+    <a href="https://wa.me/201208475556" target="_blank" class="btn-gold">Book via WhatsApp</a>
+    <a href="mailto:media321action@gmail.com" class="btn-outline">Send an Email</a>
+  </div>
+</section>
+
+<div class="glow-rule"></div>
+
+<footer>
+  <div class="f-logo">Targetyan</div>
+  <div class="f-links">
+    <a href="#services">Services</a>
+    <a href="#package">Package</a>
+    <a href="#team">Team</a>
+    <a href="https://wa.me/201208475556" target="_blank">WhatsApp</a>
+  </div>
+  <div class="f-copy">© 2026 Targetyan. All rights reserved.</div>
+</footer>
+
+<script>
+// Scroll-triggered fade-ins
+const obs = new IntersectionObserver(e => {
+  e.forEach(x => { if(x.isIntersecting) x.target.classList.add('on'); });
+}, {threshold: 0.1});
+document.querySelectorAll('.fi').forEach(el => obs.observe(el));
+
+// Custom cursor
+const dot = document.getElementById('cursor-dot');
+const ring = document.getElementById('cursor-ring');
+let mx = window.innerWidth/2, my = window.innerHeight/2;
+let rx = mx, ry = my;
+
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  dot.style.left = mx + 'px';
+  dot.style.top = my + 'px';
+});
+
+// Smooth ring follow
+function animateRing() {
+  rx += (mx - rx) * 0.35;
+  ry += (my - ry) * 0.35;
+  ring.style.left = rx + 'px';
+  ring.style.top = ry + 'px';
+  requestAnimationFrame(animateRing);
+}
+animateRing();
+
+// Hover effect on interactive elements
+const hoverEls = document.querySelectorAll('a, button, .svc-card, .team-card, .proc-card, .nav-btn, .btn-gold, .btn-outline, .plat');
+hoverEls.forEach(el => {
+  el.addEventListener('mouseenter', () => { dot.classList.add('hovering'); ring.classList.add('hovering'); });
+  el.addEventListener('mouseleave', () => { dot.classList.remove('hovering'); ring.classList.remove('hovering'); });
+});
+
+// Click effect
+document.addEventListener('mousedown', () => { dot.classList.add('clicking'); ring.classList.add('clicking'); });
+document.addEventListener('mouseup', () => { dot.classList.remove('clicking'); ring.classList.remove('clicking'); });
+
+// Scroll progress bar
+const bar = document.getElementById('scroll-bar');
+const topBtn = document.getElementById('scroll-top');
+window.addEventListener('scroll', () => {
+  const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+  bar.style.width = pct + '%';
+  if (window.scrollY > 400) topBtn.classList.add('visible');
+  else topBtn.classList.remove('visible');
+});
+</script>
+</body>
+</html>
