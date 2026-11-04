@@ -1,0 +1,37 @@
+# Targetyan
+
+> Targetyan is a social media marketing agency (SMMA) in Egypt. It helps brands grow with social media strategy, Meta Ads, stop-scrolling reels, persuasive copywriting, SEO and AEO. Founded by Zain Emad (strategy & growth) and Marwan Gado (video editing & montage).
+
+## Main pages
+- [Home (English)](https://zainemad.github.io/targetyan/): services, Tailored Package, team, process, booking
+- [الصفحة الرئيسية (العربية)](https://zainemad.github.io/targetyan/targetyan-arabic.html): Arabic version of the home page
+- [Founder (English)](https://zainemad.github.io/targetyan/founder.html): about Zain Emad, co-founder and growth strategist
+- [المؤسس (العربية)](https://zainemad.github.io/targetyan/founder-arabic.html): Arabic founder page
+
+## Services
+- Social media strategy
+- Account audit and analysis
+- Stop-scrolling reels (mobile shooting, professional editing and montage)
+- Meta Ads management (Facebook and Instagram)
+- Competitor and market research
+- Persuasive copywriting
+
+## Tailored Package (2026)
+- Includes SEO, AEO, social media management, persuasive copywriting, reels, on-brand designs and sales psychology
+- Price: 14,999 EGP (regular 20,000 EGP), limited client slots each month
+
+## How it works
+1. Discovery call
+2. Audit and strategy
+3. Content and ads
+4. Optimize and scale
+
+## Contact
+- WhatsApp: https://wa.me/201208475556
+- Email: targatyan@gmail.com
+- Instagram: https://instagram.com/marketwithzanzon
+- LinkedIn: https://www.linkedin.com/in/zain-emad-84a584234
+- Behance: https://www.behance.net/zainEmad
+
+## Optional
+- [Sitemap](https://zainemad.github.io/targetyan/sitemap.xml)
