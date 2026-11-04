@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /targetyan/404.html
+
+Sitemap: https://zainemad.github.io/targetyan/sitemap.xml
